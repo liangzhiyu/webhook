@@ -17,6 +17,10 @@
 
     <properties>
         <java.version>1.8</java.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <docker.image.prefix>deterrer</docker.image.prefix>
+        <spring.boot.version>2.3.3.RELEASE</spring.boot.version>
     </properties>
 
     <dependencies>
@@ -63,6 +67,26 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                    <pushImage>true</pushImage>
+                    <useGitCommitId>true</useGitCommitId>
+                    <retryPushCount>2</retryPushCount>
+                </configuration>
             </plugin>
         </plugins>
     </build>
